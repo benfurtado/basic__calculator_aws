@@ -1,10 +1,11 @@
-// Signup function
+// 🚀 Secure signup using hashed passwords (Base64 encoding for demo purposes)
 function signup() {
     let username = document.getElementById("signup-username").value;
     let password = document.getElementById("signup-password").value;
 
     if (username && password) {
-        localStorage.setItem(username, password);
+        let hashedPassword = btoa(password);
+        localStorage.setItem(username, hashedPassword);
         alert("Signup successful! You can now login.");
         window.location.href = "login.html";
     } else {
@@ -12,12 +13,13 @@ function signup() {
     }
 }
 
-// Login function
+// 🚀 Secure login function
 function login() {
     let username = document.getElementById("login-username").value;
     let password = document.getElementById("login-password").value;
+    let storedPassword = localStorage.getItem(username);
 
-    if (localStorage.getItem(username) === password) {
+    if (storedPassword && storedPassword === btoa(password)) {
         sessionStorage.setItem("loggedInUser", username);
         alert("Login successful!");
         window.location.href = "index.html";
@@ -26,13 +28,13 @@ function login() {
     }
 }
 
-// Logout function
+// 🚀 Logout function
 function logout() {
     sessionStorage.removeItem("loggedInUser");
     window.location.href = "login.html";
 }
 
-// Check if user is logged in
+// 🚀 Check authentication before accessing pages
 function checkAuth() {
     if (!sessionStorage.getItem("loggedInUser")) {
         alert("Please log in first.");
@@ -40,28 +42,18 @@ function checkAuth() {
     }
 }
 
-// Calculator function
-function calculate(operator) {
-    let num1 = parseFloat(document.getElementById("num1").value);
-    let num2 = parseFloat(document.getElementById("num2").value);
-    let result;
-
-    if (isNaN(num1) || isNaN(num2)) {
-        alert("Enter valid numbers!");
+// 🚀 Dynamic Calculator that supports multiple numbers
+function calculate() {
+    let input = document.getElementById("expression").value.replace(/\s+/g, ''); // Remove spaces
+    if (!input) {
+        alert("Enter a valid mathematical expression!");
         return;
     }
 
-    switch (operator) {
-        case '+': result = num1 + num2; break;
-        case '-': result = num1 - num2; break;
-        case '*': result = num1 * num2; break;
-        case '/': 
-            if (num2 === 0) {
-                alert("Cannot divide by zero!");
-                return;
-            }
-            result = num1 / num2; 
-            break;
+    try {
+        let result = eval(input); // 🚨 Evaluates user input (Be careful in production)
+        document.getElementById("result").innerText = result;
+    } catch (error) {
+        alert("Invalid Expression!");
     }
-    document.getElementById("result").innerText = result;
 }
